@@ -19,12 +19,14 @@ fn main() {
             .read_line(&mut guess)
             .expect("Failed to read line");
 
-        let guess: u32 = match guess.trim().parse() {
+        let guess_num: u32 = match guess.trim().parse() {
             Ok(num) => num,
             Err(_) => continue,
         };
 
-        match guess.cmp(&secret_number) {
+        let guess = Guess::new(guess_num);
+
+        match guess.value().cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
@@ -33,6 +35,21 @@ fn main() {
             }
         }
     }
+}
 
-    
+struct Guess {
+    value: u32,
+}
+
+impl Guess {
+    fn new(value: u32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("Guess value must be between 1 and 100, got {}.", value);
+        }
+        Guess { value }
+    }
+
+    fn value(&self) -> u32 {
+        self.value
+    }
 }
